@@ -2,8 +2,7 @@ let questions = [];
 let currentIndex = 0;
 let score = 0;
 
-const publicSpreadsheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRUcbhxBVF-_wHTPckdLKDWnt2E8rwE4v1lSL2h_IKNCSuHOiU8xqmuQd1GmO9pmr7wnanzV2_YAu2Y/pubhtml';
-
+const publicSpreadsheetUrl = 'https://docs.google.com/spreadsheets/d/1UkfHZOzOy9dhParCQRQeWzWRXkpBzIzkR3GlK42NUNw/pubhtml';
 window.onload = function() {
   Tabletop.init({
     key: publicSpreadsheetUrl,
