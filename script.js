@@ -2,19 +2,29 @@ let questions = [];
 let currentIndex = 0;
 let score = 0;
 
-const publicSpreadsheetUrl = 'https://docs.google.com/spreadsheets/d/1UkfHZOzOy9dhParCQRQeWzWRXkpBzIzkR3GlK42NUNw/pubhtml';
-window.onload = function() {
-  Tabletop.init({
-    key: publicSpreadsheetUrl,
-    callback: showData,
-    simpleSheet: true
-  });
-};
+const SHEET_ID = "1UkfHZOzOy9dhParCQRQeWzWRXkpBzIzkR3GlK42NUNw";  // Your sheet ID
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
-function showData(data) {
-  questions = data;
-  showQuestion();
-}
+window.onload = async function() {
+  try {
+    const response = await fetch(SHEET_URL);
+    const text = await response.text();
+    const json = JSON.parse(text.substr(47).slice(0, -2)); // clean Google's response
+
+    questions = json.table.rows.map(row => ({
+      Question: row.c[0]?.v,
+      Option1: row.c[1]?.v,
+      Option2: row.c[2]?.v,
+      Option3: row.c[3]?.v,
+      Option4: row.c[4]?.v,
+      AnswerIndex: parseInt(row.c[5]?.v, 10)
+    }));
+
+    showQuestion();
+  } catch (error) {
+    console.error("Error loading sheet data", error);
+  }
+};
 
 function showQuestion() {
   const q = questions[currentIndex];
@@ -35,11 +45,9 @@ function showQuestion() {
 }
 
 function selectAnswer(index) {
-  const correct = parseInt(questions[currentIndex].AnswerIndex);
-  if (index === correct) score++;
+  if (index === questions[currentIndex].AnswerIndex) score++;
   document.getElementById("nextBtn").style.display = "block";
-  const buttons = document.querySelectorAll("#quiz-container button");
-  buttons.forEach(btn => btn.disabled = true);
+  document.querySelectorAll("#quiz-container button").forEach(btn => btn.disabled = true);
 }
 
 function nextQuestion() {
